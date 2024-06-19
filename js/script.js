@@ -1,5 +1,16 @@
 const global = {
   currentPage: window.location.pathname,
+  search: {
+    term: "",
+    type: "",
+    page: 1,
+    totalPages: 1,
+    totalResults: 0,
+  },
+  api: {
+    apiKey: "bd3f43f81b8610cac59244cddb991a94",
+    apiURL: "https://api.themoviedb.org/3/",
+  },
 };
 
 async function getPopularMovies() {
@@ -19,9 +30,9 @@ async function getPopularMovies() {
               alt="${movie.title}"
             />`
                 : `<img
-              src="../img/no-image.jpg"
+              src="images/no-image.jpg"
               class="card-img-top"
-              alt="Movie Title"
+              alt="${movie.title}"
             />`
             }
           </a>
@@ -54,7 +65,7 @@ async function getPopularTVShows() {
         alt="${tv.name}"
       />`
           : `<img
-        src="../img/no-image.jpg"
+        src="images/no-image.jpg"
         class="card-img-top"
         alt="Movie Title"
       />`
@@ -93,7 +104,7 @@ async function displayMovieDetails() {
             alt="${movie.title}"
           />`
               : `<img
-            src="../img/no-image.jpg"
+            src="images/no-image.jpg"
             class="card-img-top"
             alt="${movie.title}"
           />`
@@ -163,7 +174,7 @@ async function displayTVShowDetails() {
               alt="${TV.name}"
             />`
                 : `<img
-              src="../img/no-image.jpg"
+              src="images/no-image.jpg"
               class="card-img-top"
               alt="${TV.name}"
             />`
@@ -231,8 +242,74 @@ function displayBG(type, pathBG) {
   }
 }
 
-// Display Sliding Function
+// Search Function
+async function search() {
+  const queryString = window.location.search;
+  const urlParams = new URLSearchParams(queryString);
 
+  global.search.type = urlParams.get("type");
+  global.search.term = urlParams.get("search-term");
+
+  if (global.search.term !== "" && global.search.term !== null) {
+    const { results, total_pages, page } = await searchAPIData();
+
+    if (results.length === 0) {
+      showAlert("No results found");
+      return;
+    }
+
+    displaySearchResults(results);
+
+    document.querySelector("#search-term").value = "";
+  } else {
+    showAlert("Please enter a search term");
+  }
+}
+
+function displaySearchResults(results) {
+  // Clear previous search results
+  const searchContainer = document.querySelector("#search-results");
+  searchContainer.innerHTML = "";
+
+  results.forEach((result) => {
+    const div = document.createElement("div");
+    div.classList.add("card");
+
+    // Set image path
+    let imagePath = "images/no-image.jpg";
+    if (result.poster_path) {
+      imagePath = `https://image.tmdb.org/t/p/w500/${result.poster_path}`;
+    }
+
+    // Set title or name based on search type
+    const titleOrName =
+      global.search.type === "movie" ? result.title : result.name;
+
+    // Set release or air date based on search type
+    const releaseOrAirDate =
+      global.search.type === "tv" ? result.first_air_date : result.release_date;
+
+    div.innerHTML = `        
+        <a href="${global.search.type}-details.html?id=${result.id}">
+          <img
+            src="${imagePath}"
+            class="card-img-top"
+            alt="${titleOrName}"
+          />
+        </a>
+        <div class="card-body">
+          <h5 class="card-title">${titleOrName}</h5>
+          <p class="card-text">
+            <small class="text-muted">Release: ${releaseOrAirDate}</small>
+          </p>
+        </div>
+      `;
+
+    searchContainer.appendChild(div);
+  });
+}
+
+// Display Sliding Function
 async function displaySlider() {
   const { results } = await fetchAPIData("movie/now_playing");
 
@@ -286,13 +363,30 @@ function initSwiper() {
 
 // Fetch data from API
 async function fetchAPIData(endpoint) {
-  const API_KEY = "bd3f43f81b8610cac59244cddb991a94";
-  const API_URL = "https://api.themoviedb.org/3/";
+  const API_KEY = global.api.apiKey;
+  const API_URL = global.api.apiURL;
 
   showSpinner();
 
   const response = await fetch(
     `${API_URL}${endpoint}?api_key=${API_KEY}&language=en-US`
+  );
+
+  const data = await response.json();
+  hideSpinner();
+
+  return data;
+}
+
+// Search API Data
+async function searchAPIData() {
+  const API_KEY = global.api.apiKey;
+  const API_URL = global.api.apiURL;
+
+  showSpinner();
+
+  const response = await fetch(
+    `${API_URL}search/${global.search.type}?api_key=${API_KEY}&language=en-US&query=${global.search.term}`
   );
 
   const data = await response.json();
@@ -319,6 +413,17 @@ function highlightActiveLink() {
   });
 }
 
+// Alert
+function showAlert(message, className = "alert-error") {
+  const alertEl = document.createElement("div");
+  alertEl.classList.add("alert", className);
+  alertEl.appendChild(document.createTextNode(message));
+
+  document.querySelector("#alert").appendChild(alertEl);
+
+  setTimeout(() => alertEl.remove(), 3000);
+}
+
 function currencyCommas(number) {
   return number.toLocaleString("en-US");
 }
@@ -341,7 +446,7 @@ function init() {
       displayTVShowDetails();
       break;
     case "/search.html":
-      console.log("TV Details Page");
+      search();
       break;
   }
 }
