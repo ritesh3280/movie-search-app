@@ -1,3 +1,4 @@
+/* General reset */
 *,
 *::before,
 *::after {
@@ -6,28 +7,37 @@
   margin: 0;
 }
 
+/* Root variables */
 :root {
   --color-primary: #020d18;
   --color-secondary: #5f9e8e;
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
+/* Body styles */
 body {
   font-family: "Poppins", sans-serif;
   font-size: 16px;
   background: var(--color-primary);
   color: #fff;
-  overflow-x: hidden;
+  overflow-x: hidden; /* Hide horizontal overflow */
 }
 
+/* Links */
 a {
   color: #fff;
   text-decoration: none;
 }
 
+/* Lists */
 ul {
   list-style: none;
 }
 
+/* Text classes */
 .text-primary {
   color: var(--color-secondary);
 }
@@ -36,15 +46,18 @@ ul {
   color: var(--color-secondary);
 }
 
+/* Active state */
 .active {
   color: var(--color-secondary);
   font-weight: 700;
 }
 
+/* Back button */
 .back {
   margin-top: 30px;
 }
 
+/* Buttons */
 .btn {
   display: inline-block;
   padding: 0.5rem 1rem;
@@ -71,6 +84,7 @@ ul {
   color: #fff;
 }
 
+/* Page container */
 .container {
   max-width: 1200px;
   width: 100%;
@@ -78,16 +92,17 @@ ul {
   padding: 0 20px;
 }
 
+/* Header styles */
+.main-header {
+  padding: 20px 0;
+  background: rgba(0, 0, 0, 0.8);
+}
+
 .main-header .container {
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 0 20px;
-}
-
-.main-header {
-  padding: 20px 0;
-  background: rgba(0, 0, 0, 0.8);
 }
 
 .main-header .logo {
@@ -113,17 +128,18 @@ ul {
   color: var(--color-secondary);
 }
 
-/* Grid */
+/* Grid layout */
 .grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   grid-gap: 20px;
 }
 
-/* Card */
+/* Cards */
 .card {
   background: #04376b;
   padding: 5px;
+  transition: transform 0.3s ease, background-color 0.3s ease;
 }
 
 .card img {
@@ -141,7 +157,7 @@ ul {
   background: #0a4b8f;
 }
 
-/* Footer */
+/* Footer styles */
 .main-footer {
   background: #020d18;
   padding: 20px 0;
@@ -175,8 +191,7 @@ ul {
   color: var(--color-secondary);
 }
 
-/* Section: Now Playing */
-
+/* Now Playing section */
 section.now-playing {
   padding: 60px;
   background: url(../images/showcase-bg.jpg) no-repeat center center/cover;
@@ -188,7 +203,7 @@ section h2 {
   text-transform: uppercase;
 }
 
-/* Slider */
+/* Slider styles */
 .swiper {
   width: 100%;
   height: 50%;
@@ -215,7 +230,7 @@ section h2 {
   padding: 10px;
 }
 
-/* Movie Details */
+/* Movie details */
 .details-top {
   display: flex;
   justify-content: space-between;
@@ -245,7 +260,7 @@ section h2 {
   border-color: rgba(255, 255, 255, 0.1);
 }
 
-/* Search */
+/* Search section */
 .search {
   padding: 60px;
   margin-bottom: 40px;
@@ -288,6 +303,7 @@ section h2 {
   border-radius: 5px;
   background: transparent;
   color: #fff;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease; /* Add transition properties */
 }
 
 .search .container form input[type="text"]::placeholder {
@@ -296,6 +312,8 @@ section h2 {
 
 .search .container form input[type="text"]:focus {
   outline: none;
+  border-color: var(--color-secondary);
+  box-shadow: 0 0 5px rgba(95, 158, 142, 0.8);
 }
 
 .search .container form button {
@@ -315,6 +333,7 @@ section h2 {
   color: #fff;
 }
 
+/* Pagination styles */
 .pagination {
   margin-top: 20px;
 }
@@ -323,7 +342,7 @@ section h2 {
   margin-top: 10px;
 }
 
-/* Alert */
+/* Alert styles */
 .alert {
   padding: 10px 20px;
   margin-bottom: 20px;
@@ -338,6 +357,7 @@ section h2 {
   background: red;
 }
 
+/* Responsive media queries */
 @media (max-width: 1200px) {
   .container {
     max-width: 1000px;
@@ -444,4 +464,37 @@ section h2 {
   .search .container form button {
     flex: 1;
   }
+
+  .cast-list {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+  }
+
+  .cast-list span {
+    margin-right: 5px;
+  }
+}
+
+/* Cast list specific styles */
+.cast-item {
+  display: flex;
+  margin-bottom: 10px;
+}
+
+.cast-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+.cast-list span {
+  background: none;
+  padding: 0;
+  margin-right: 10px;
+  white-space: nowrap;
+}
+
+.text-secondary {
+  color: var(--color-secondary);
+  font-weight: bold;
 }

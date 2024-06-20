@@ -86,8 +86,10 @@ async function getPopularTVShows() {
 // Movie Deatils
 async function displayMovieDetails() {
   const urlID = window.location.search.split("=")[1];
-
   const movie = await fetchAPIData(`movie\/${urlID}`);
+
+  const credits = await fetchAPIData(`movie/${urlID}/credits`);
+  const cast = credits.cast;
 
   displayBG("movie", movie.backdrop_path);
 
@@ -132,6 +134,14 @@ async function displayMovieDetails() {
         <div class="details-bottom">
           <h2>Movie Info</h2>
           <ul>
+            <li class="cast-item"><span class="text-secondary">Cast:</span>&nbsp
+            <div class="cast-list">
+                ${cast
+                  .slice(0, 5)
+                  .map((actor) => `<span>${actor.name}</span>`)
+                  .join("")}
+            </div>
+            </li>
             <li><span class="text-secondary">Budget:</span> $${currencyCommas(
               movie.budget
             )}</li>
@@ -158,6 +168,9 @@ async function displayTVShowDetails() {
   const urlID = window.location.search.split("=")[1];
 
   const TV = await fetchAPIData(`tv/${urlID}`);
+
+  const credits = await fetchAPIData(`tv/${urlID}/credits`);
+  const cast = credits.cast;
 
   displayBG("TV", TV.backdrop_path);
 
@@ -200,15 +213,26 @@ async function displayTVShowDetails() {
             </div>
           </div>
           <div class="details-bottom">
-            <h2>Movie Info</h2>
+            <h2>Show Info</h2>
             <ul>
-              <li><span class="text-secondary">Number of Episodes:</span> ${
-                TV.number_of_episodes
-              }</li>
-              <li><span class="text-secondary">Last Episode To Air:</span> ${
-                TV.last_episode_to_air.name
-              }</li>
-              <li><span class="text-secondary">Status:</span> ${TV.status}</li>
+                <li class="cast-item">
+                <span class="text-secondary">Cast:</span>&nbsp;
+                <div class="cast-list">
+                    ${cast
+                      .slice(0, 5)
+                      .map((actor) => `<span>${actor.name}</span>`)
+                      .join("")}
+                </div>
+                </li>    
+                <li><span class="text-secondary">Number of Episodes:</span> ${
+                  TV.number_of_episodes
+                }</li>
+                <li><span class="text-secondary">Last Episode To Air:</span> ${
+                  TV.last_episode_to_air.name
+                }</li>
+                <li><span class="text-secondary">Status:</span> ${
+                  TV.status
+                }</li>
             </ul>
             <h4>Production Companies</h4>
             <div class="list-group">${TV.production_companies
